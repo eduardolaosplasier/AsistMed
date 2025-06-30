@@ -13,34 +13,34 @@ export default function AppointmentForm() {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+ const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    const cita = {
-      paciente_nombre: formData.paciente,
-      fecha: `${formData.fecha}T${formData.hora}`,
-      medico: 'Dr. Eduardo Laos',
-      tipo: formData.tipo,
-    };
-
-    try {
-      const response = await fetch('http://localhost:5050/citas', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(cita),
-      });
-
-      if (response.ok) {
-        alert('Cita registrada con éxito');
-        setFormData({ paciente: '', fecha: '', hora: '', tipo: 'Consulta' });
-      } else {
-        alert('Error al registrar la cita');
-      }
-    } catch (error) {
-      console.error(error);
-      alert('Error de conexión con el servidor');
-    }
+  const cita = {
+    paciente_nombre: formData.paciente,
+    fecha: `${formData.fecha}T${formData.hora}`,
+    medico: 'Dr. Eduardo Laos',
+    tipo: formData.tipo,
   };
+
+  try {
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/citas`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(cita)
+    });
+
+    if (response.ok) {
+      alert('Cita registrada con éxito');
+      setFormData({ paciente: '', fecha: '', hora: '', tipo: 'Consulta' });
+    } else {
+      alert('Error al registrar la cita');
+    }
+  } catch (error) {
+    console.error(error);
+    alert('Error de conexión con el servidor');
+  }
+};
 
   return (
     <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem', maxWidth: '300px' }}>
