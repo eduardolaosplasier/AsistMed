@@ -45,7 +45,27 @@ app.get('/citas', async (req, res) => {
   }
 });
 
-app.listen(PORT, '0.0.0.0', () => {
-  console.log(`Server running on http://0.0.0.0:${PORT}`);
+app.post('/citas', async (req, res) => {
+  const { paciente_nombre, fecha, medico, tipo } = req.body;
+
+  if (!paciente_nombre || !fecha || !medico || !tipo) {
+    return res.status(400).json({ mensaje: 'Faltan datos obligatorios' });
+  }
+
+  try {
+    await db.query(
+      'INSERT INTO citas (paciente_nombre, fecha, medico, tipo) VALUES ($1, $2, $3, $4)',
+      [paciente_nombre, fecha, medico, tipo]
+    );
+
+    return res.status(200).json({ mensaje: 'Cita registrada con éxito' });
+  } catch (error) {
+    console.error('Error al registrar cita:', error.stack);
+    return res.status(500).json({ mensaje: 'Error al registrar cita' });
+  }
+});
+
+app.listen(PORT, () => {
+  console.log(`Server running on ${PORT}`);
 });
 
